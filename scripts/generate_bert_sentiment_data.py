@@ -106,10 +106,11 @@ def save_jsonl(data, path):
 
 # === DATEN VORBEREITEN ===
 print("📥 Lade Daten...")
-all_data = load_posts(SUBREDDIT)
+MAX_SAMPLES = 10000
+all_data = load_posts(SUBREDDIT)[:MAX_SAMPLES]
 
 #train_data, test_data = train_test_split(all_data, test_size=0.2, random_state=42)
-train_data, test_data = train_test_split(all_data[:1000], test_size=0.2, random_state=42)
+train_data, test_data = train_test_split(all_data, test_size=0.2, random_state=42)
 print(f"✅ Train: {len(train_data)} | ✅ Test: {len(test_data)}")
 
 save_jsonl(train_data, TRAIN_JSONL)
@@ -137,20 +138,20 @@ import torch
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("📟 Verwende Gerät:", device)
 
-
 training_args = TrainingArguments(
     output_dir=OUTPUT_DIR,
-    per_device_train_batch_size=3, #erhöhen
-    per_device_eval_batch_size=3, #erhöhen
-    num_train_epochs=2, #erhöhen
+    per_device_train_batch_size=8,          # reduziert RAM-Auslastung, schneller auf CPU
+    per_device_eval_batch_size=8,
+    num_train_epochs=2,                     # genug für grobes Sentiment-Feintuning
+    learning_rate=2e-5,                     # robuster, konservativer Startwert
     logging_dir=os.path.join(OUTPUT_DIR, "logs"),
-    logging_steps=10,
+    logging_steps=50,
     save_total_limit=1,
     load_best_model_at_end=True,
     metric_for_best_model="accuracy",
     evaluation_strategy="epoch",
     save_strategy="epoch",
-    use_cpu=(device == "cpu")  # transformers ≥ 4.53
+    use_cpu=(device == "cpu")               # M1 = keine CUDA
 )
 
 def compute_metrics(eval_pred):

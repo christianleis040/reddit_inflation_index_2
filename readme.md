@@ -3,14 +3,18 @@
 
 - ./run_all_extractions.sh
 
-
-
-- python scripts/analyze_sentiment_vader.py --subreddit personalfinance
+- python scripts/analyze_sentiment_vader.py --subreddit food
 - python scripts/combine_sentiment.py
-- python scripts/generate_bert_sentiment_data.py
+
+
+- python scripts/generate_bert_sentiment_data.py --subreddit food
 - python scripts/predict_bert_sentiment.py --subreddit economy
-- python scripts/generate_sentiment_predictions.py  # falls du `SUBREDDIT` dynamisch per argparse machen willst, sag Bescheid
+
+- python scripts/generate_sentiment_predictions.py --subreddit food  # falls du `SUBREDDIT` dynamisch per argparse machen willst, sag Bescheid
 - python scripts/generate_sentiment_predictions.py
+- python scripts/generate_sentiment_predictions.py --subreddit food --model_dir data/bert_pipeline/food_model
+- python scripts/generate_sentiment_predictions.py --subreddit povertyfinance --model_dir data/bert_pipeline/povertyfinance_model
+
 
 
 
